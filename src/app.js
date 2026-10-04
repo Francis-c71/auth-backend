@@ -1,11 +1,22 @@
 import express from 'express';
+
+// Prevent XSS e.g., injecting <script> in email field, 
+// clickjacking and 
+// Sniffing.
 import helmet from 'helmet';
+
+// Allow frontend to call backend safely.
 import cors from 'cors';
+
+// Log everything to the console at dev or prod
 import morgan from 'morgan';
+
+// Read cookie info in the cookie e.g., JWT
 import cookieParser from 'cookie-parser';
+
 import { env } from './config/env.js';
 import { globalLimiter } from './middleware/rateLimiters.js';
-import { notFound, errorHandler } from './middleware/errorHandler.js';
+import { notFoundErrorHandler, generalErrorHandler } from './middleware/errorHandler.js';
 import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
 
@@ -25,7 +36,7 @@ app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
-app.use(notFound);
-app.use(errorHandler);
+app.use(notFoundErrorHandler);
+app.use(generalErrorHandler);
 
 export default app;

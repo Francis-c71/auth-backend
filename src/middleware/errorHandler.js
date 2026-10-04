@@ -2,11 +2,11 @@ import { ZodError } from 'zod';
 import { AppError } from '../utils/AppError.js';
 import { env } from '../config/env.js';
 
-export const notFound = (req, _res, next) =>
+export const notFoundErrorHandler = (req, _res, next) =>
   next(new AppError(`Route ${req.method} ${req.originalUrl} not found`, 404));
 
-// eslint-disable-next-line no-unused-vars
-export function errorHandler(err, _req, res, _next) {
+
+export function generalErrorHandler(err, _req, res, _next) {
   let status = 500;
   let message = 'Internal server error';
   let details;
