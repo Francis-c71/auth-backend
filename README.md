@@ -225,7 +225,7 @@ npm run create-admin -- "Ada Lovelace" ada@example.com 'BrandNewPass3'
 ```
 Then log in again to get a fresh access token with the `admin` role, and:
 ```bash
-curl "localhost:4000/api/users?page=1&limit=20" S\
+curl "localhost:4000/api/users?page=1&limit=20" \
   -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
 ```
 
