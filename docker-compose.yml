@@ -1,5 +1,6 @@
 
-
+volumes:
+  mongo-data:
 
 services:
    mongo:
@@ -7,5 +8,3 @@ services:
     ports: ["27017:27017"]
     volumes: [mongo-data:/data/db]
 
-volumes:
-  mongo-data:
