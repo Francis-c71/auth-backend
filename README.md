@@ -116,23 +116,128 @@ Create an admin: `npm run create-admin -- "Admin" admin@example.com 'StrongPass1
 **What happens:** Returns `{ "status": "ok" }` immediately, no auth, no DB check.
 **Example scenario:** Your hosting platform pings this every few seconds to decide whether to restart the container or route traffic to it.
 
-
 ## Try it
 
+All commands use `-c jar.txt -b jar.txt` to save/send the refresh-token cookie, so run them from the same folder in order. Replace `<...>` placeholders with real values as you go.
+
+### 1. Health check
+```bash
+curl localhost:4000/health
+```
+
+### 2. Register
 ```bash
 curl -i -c jar.txt -X POST localhost:4000/api/auth/register \
   -H 'Content-Type: application/json' \
-  -d '{"name":"Ada","email":"ada@example.com","password":"Sup3rSecret"}'
-
-# copy the token from the server console, then:
-curl -X POST localhost:4000/api/auth/verify-email -H 'Content-Type: application/json' -d '{"token":"<TOKEN>"}'
-
-curl -c jar.txt -X POST localhost:4000/api/auth/login -H 'Content-Type: application/json' \
-  -d '{"email":"ada@example.com","password":"Sup3rSecret"}'
-
-curl localhost:4000/api/users/me -H 'Authorization: Bearer <ACCESS_TOKEN>'
-curl -b jar.txt -c jar.txt -X POST localhost:4000/api/auth/refresh
+  -d '{"name":"Ada","email":"ada@example.com","password":"Sup3rSecret1"}'
 ```
+Check your server console for the printed verification email (dev mode with no SMTP configured) and copy the token.
+
+### 3. Verify email
+```bash
+curl -X POST localhost:4000/api/auth/verify-email \
+  -H 'Content-Type: application/json' \
+  -d '{"token":"<VERIFY_TOKEN>"}'
+```
+
+### 4. Resend verification (if the link expired or didn't arrive)
+```bash
+curl -X POST localhost:4000/api/auth/resend-verification \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"ada@example.com"}'
+```
+
+### 5. Login
+```bash
+curl -i -c jar.txt -X POST localhost:4000/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"ada@example.com","password":"Sup3rSecret1"}'
+```
+Copy the `accessToken` from the JSON response. The refresh token is saved automatically in `jar.txt` as a cookie.
+
+### 6. Get current user (protected route)
+```bash
+curl localhost:4000/api/users/me \
+  -H 'Authorization: Bearer <ACCESS_TOKEN>'
+```
+
+### 7. Update current user's name
+```bash
+curl -X PATCH localhost:4000/api/users/me \
+  -H 'Authorization: Bearer <ACCESS_TOKEN>' \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Ada Lovelace"}'
+```
+
+### 8. Refresh the access token
+```bash
+curl -i -b jar.txt -c jar.txt -X POST localhost:4000/api/auth/refresh
+```
+This rotates the refresh cookie in `jar.txt` and returns a new `accessToken` — use that for subsequent requests.
+
+### 9. Change password (while logged in)
+```bash
+curl -i -b jar.txt -c jar.txt -X POST localhost:4000/api/auth/change-password \
+  -H 'Authorization: Bearer <ACCESS_TOKEN>' \
+  -H 'Content-Type: application/json' \
+  -d '{"currentPassword":"Sup3rSecret1","newPassword":"EvenSecurer2"}'
+```
+This logs out every other device and returns a fresh access token + refresh cookie for this one.
+
+### 10. Forgot password (simulate losing access)
+```bash
+curl -X POST localhost:4000/api/auth/forgot-password \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"ada@example.com"}'
+```
+Copy the reset token printed in the server console.
+
+### 11. Reset password
+```bash
+curl -i -X POST localhost:4000/api/auth/reset-password \
+  -H 'Content-Type: application/json' \
+  -d '{"token":"<RESET_TOKEN>","password":"BrandNewPass3"}'
+```
+This signs out every device, so you'll need to log in again after this.
+
+### 12. Log in again with the new password
+```bash
+curl -i -c jar.txt -X POST localhost:4000/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"ada@example.com","password":"BrandNewPass3"}'
+```
+
+### 13. Log out (current device only)
+```bash
+curl -i -b jar.txt -c jar.txt -X POST localhost:4000/api/auth/logout
+```
+
+### 14. Log out of all devices
+```bash
+curl -i -b jar.txt -X POST localhost:4000/api/auth/logout-all \
+  -H 'Authorization: Bearer <ACCESS_TOKEN>'
+```
+
+### 15. Admin: list users
+First promote your account to admin from the server (not via the API):
+```bash
+npm run create-admin -- "Ada Lovelace" ada@example.com 'BrandNewPass3'
+```
+Then log in again to get a fresh access token with the `admin` role, and:
+```bash
+curl localhost:4000/api/users?page=1&limit=20 \
+  -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
+```
+
+### 16. Admin: change a user's role
+```bash
+curl -i -X PATCH localhost:4000/api/users/<USER_ID>/role \
+  -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
+  -H 'Content-Type: application/json' \
+  -d '{"role":"admin"}'
+```
+`<USER_ID>` is the `id` field from a user object returned by step 15. You'll get a 400 if you try this on your own account.
+
 
 ## How sessions work
 
