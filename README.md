@@ -38,6 +38,85 @@ Create an admin: `npm run create-admin -- "Admin" admin@example.com 'StrongPass1
 | PATCH | `/api/users/:id/role` | Admin | `{role: "user"|"admin"}` |
 | GET | `/health` | – | Health check |
 
+
+## Use Cases
+
+### `POST /api/auth/register`
+**When to call it:** A new visitor fills out a sign-up form (name, email, password).
+**What happens:** An account is created in an unverified state and a verification email is sent.
+**Example scenario:** Someone signs up for your app for the first time. They won't be able to log in yet — they need to verify their email first (unless `REQUIRE_EMAIL_VERIFICATION=false`).
+
+### `POST /api/auth/verify-email`
+**When to call it:** The user clicks the verification link in their email, which opens your frontend at `/verify-email?token=...`. The frontend reads the token from the URL and posts it here.
+**What happens:** The account is marked verified and the token is destroyed (single-use).
+**Example scenario:** Confirming the person owns the email address before letting them log in — prevents fake/typo'd emails from being used to create accounts.
+
+### `POST /api/auth/resend-verification`
+**When to call it:** The user says "I didn't get the email" or the original verification link expired (24h).
+**What happens:** If the account exists and isn't already verified, a new token is generated and emailed. Otherwise, nothing happens — but the response looks identical either way.
+**Example scenario:** A "Resend verification email" button on a "please verify your email" screen.
+
+### `POST /api/auth/login`
+**When to call it:** A returning, verified user enters their email and password.
+**What happens:** Credentials are checked, failed attempts are tracked (lockout after 5), and on success an access token + refresh cookie are issued.
+**Example scenario:** Standard sign-in form. Also the first call a mobile app makes before storing tokens locally.
+
+### `POST /api/auth/refresh`
+**When to call it:** Automatically, by your frontend, whenever an API call returns 401 because the access token expired (every 15 min) — or proactively on app load to restore a session.
+**What happens:** The refresh token is rotated (old one destroyed, new one issued) and a new access token is returned.
+**Example scenario:** A user has the app open for hours. Instead of forcing re-login every 15 minutes, the frontend silently refreshes in the background.
+
+### `POST /api/auth/logout`
+**When to call it:** User clicks "Log out" on their current device/browser.
+**What happens:** Only the current session's refresh token is revoked; other devices stay logged in.
+**Example scenario:** Logging out of your laptop while staying logged in on your phone.
+
+### `POST /api/auth/logout-all`
+**When to call it:** User clicks "Log out of all devices" (often shown after a "where you're logged in" security page).
+**What happens:** Every refresh token for that user is revoked.
+**Example scenario:** The user suspects someone else has access to their account, or they just want a clean slate across all sessions.
+
+### `POST /api/auth/forgot-password`
+**When to call it:** User clicks "Forgot password?" on the login screen and submits their email.
+**What happens:** If the account exists, a reset link is emailed. The response is identical whether or not the account exists (prevents email enumeration).
+**Example scenario:** User can't remember their password and needs a reset link sent to their inbox.
+
+### `POST /api/auth/reset-password` 
+**When to call it:** User clicks the link from the forgot-password email (`/reset-password?token=...`) and submits a new password.
+**What happens:** Password is updated, the account is marked verified, lockouts are cleared, and **every device is signed out** (forces re-login everywhere with the new password).
+**Example scenario:** Completing a password reset after being locked out of an old password.
+
+### `POST /api/auth/change-password`
+**When to call it:** A logged-in user updates their password from an account/security settings page (requires entering their current password).
+**What happens:** Password is updated, all other sessions are revoked, but the current device gets a fresh session so the user isn't logged out of the device they're using.
+**Example scenario:** Routine password change as a security best practice, or after suspecting their password was compromised.
+
+### `GET /api/users/me`
+**When to call it:** Right after login, or whenever the frontend needs the current user's profile (e.g., loading a dashboard, showing the user's name/avatar in a navbar).
+**What happens:** Returns the logged-in user's profile from their access token — no extra lookup needed on the client side.
+**Example scenario:** Populating "Welcome back, Ada" on page load.
+
+### `PATCH /api/users/me`
+**When to call it:** User edits their profile (currently just their name) in an account settings page.
+**What happens:** Updates the name field on their own account only — they can't touch anything else (email, password, role) through this route.
+**Example scenario:** User changes how their name displays after getting married, a typo fix, etc.
+
+### `GET /api/users?page=&limit=`
+**When to call it:** An admin opens a "Manage users" dashboard.
+**What happens:** Returns a paginated list of all users. Requires the `admin` role — a regular user gets a 403.
+**Example scenario:** Admin wants to see how many users signed up, search through accounts, or review activity.
+
+### `PATCH /api/users/:id/role`
+**When to call it:** An admin promotes a user to admin, or demotes an admin back to a regular user.
+**What happens:** Updates the target user's role and force-logs them out everywhere (so the role change takes effect immediately, cleanly). Admins can't change their own role this way (prevents accidental self-demotion/lockout).
+**Example scenario:** Promoting a trusted team member to admin so they can manage the user list too.
+
+### `GET /health`
+**When to call it:** Not called by end users — used by uptime monitors, load balancers, or deployment tools (Docker, Kubernetes, Render, etc.) to check if the server is alive.
+**What happens:** Returns `{ "status": "ok" }` immediately, no auth, no DB check.
+**Example scenario:** Your hosting platform pings this every few seconds to decide whether to restart the container or route traffic to it.
+
+
 ## Try it
 
 ```bash
