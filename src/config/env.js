@@ -1,5 +1,17 @@
+
+// Read configuration from .env, 
+// Check that every value is valid, 
+// Convert values into the correct JavaScript types, 
+// Apply defaults, 
+// and then give the rest of the application a clean env object to use.
+
+
+// import dotenv from 'dotenv';
+// dotenv.config();
 import 'dotenv/config';
+
 import { z } from 'zod';
+
 
 const bool = (def) =>
   z.enum(['true', 'false']).default(def).transform((v) => v === 'true');
