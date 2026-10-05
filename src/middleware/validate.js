@@ -1,4 +1,5 @@
-/** validate({ body, query, params }) with Zod schemas. Parsed (and coerced) values replace the originals. */
+// validate({ body, query, params }) with Zod schemas. 
+// Parsed (and coerced) values replace the originals. 
 export const validate = (schemas) => (req, _res, next) => {
   try {
     for (const key of ['body', 'query', 'params']) {

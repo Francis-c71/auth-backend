@@ -1,3 +1,12 @@
+// Registering users,
+// Verifying email addresses,
+// Logging in,
+// Logging out,
+// Refreshing loging sessions,
+// Resetting passwords,
+// Changing passwords,
+// Protected against brute-force attack,
+
 import crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/User.js';
@@ -10,17 +19,21 @@ import { sendVerificationEmail, sendPasswordResetEmail } from '../utils/email.js
 const VERIFY_TTL_MS = 24 * 60 * 60 * 1000;
 const RESET_TTL_MS = 60 * 60 * 1000;
 
-// Used to keep login timing similar when the email doesn't exist.
+// Used to keep login timing similar when the email doesn't exist
+// Prevents attackers from guessing which email exist or doesn't
 const DUMMY_HASH = bcrypt.hashSync('dummy-password-for-timing', env.BCRYPT_ROUNDS);
 
 // Fire-and-forget so response time doesn't reveal whether an email exists.
+// Instead of making the user wait for the email operation to finish, 
+// the application starts it and handles any error in the background.
 const notify = (promise) => promise.catch((e) => console.error('[email] failed:', e.message));
 
 const invalidCredentials = () => new AppError('Invalid email or password', 401);
 
-/* ------------------------------ sessions ------------------------------ */
-
+// Session = accessToken + refreshToken
 async function issueSession(user, meta = {}, family = crypto.randomUUID()) {
+  // The hash is stored in the database, 
+  // raw is given to the user
   const { raw, hash } = generateToken();
   const expiresAt = new Date(Date.now() + env.REFRESH_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000);
 
@@ -48,10 +61,10 @@ export async function logout(rawToken) {
   );
 }
 
-/**
- * Rotates a refresh token. Each token is single-use; presenting an already-used
- * token means it was likely stolen, so the whole token family is revoked.
- */
+
+//  Rotates a refresh token. Each token is single-use; presenting an already-used
+//  token means it was likely stolen, so the whole token family is revoked.
+ 
 export async function refresh(rawToken, meta) {
   if (!rawToken) throw new AppError('Refresh token missing', 401);
 
@@ -79,7 +92,6 @@ export async function refresh(rawToken, meta) {
   return { user, ...session };
 }
 
-/* --------------------------- registration flow --------------------------- */
 
 export async function register({ name, email, password }) {
   if (await User.exists({ email })) throw new AppError('Email is already registered', 409);
@@ -122,7 +134,7 @@ export async function resendVerification(email) {
   notify(sendVerificationEmail(user, raw));
 }
 
-/* --------------------------------- login --------------------------------- */
+
 
 export async function login({ email, password }, meta) {
   const user = await User.findOne({ email }).select('+password +failedLoginAttempts +lockUntil');
@@ -163,7 +175,6 @@ export async function login({ email, password }, meta) {
   return { user, ...session };
 }
 
-/* ---------------------------- password management ---------------------------- */
 
 export async function forgotPassword(email) {
   const user = await User.findOne({ email });
