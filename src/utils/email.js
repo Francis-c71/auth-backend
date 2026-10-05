@@ -1,3 +1,5 @@
+
+// Nodemailer, a postman
 import nodemailer from 'nodemailer';
 import { env } from '../config/env.js';
 
@@ -13,6 +15,14 @@ const transporter = env.SMTP_HOST
 const escapeHtml = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+
+// Sending both text and html:
+// Gmail, Outlook, Yahoo and Apple mail 
+// uses html for beauiful button, blue links, bold names
+// Text is a fallback; html block for security reasons, 
+// screen readers, 
+// html may be broken, 
+// sperm filters mostly filter based on html
 async function send({ to, subject, text, html }) {
   if (!transporter) {
     // Dev fallback: print to console so you can copy the link.

@@ -8,7 +8,7 @@
 // where it was defined
 
 // Only Chrome >= V8 has captureStackTrace, 
-// chrome < V8, Firefox, Safari or Dena Doesn't
+// chrome < V8, Firefox, Safari or Dena Doesn't,
 // the optional chaining prevents the app from crashing in the later browsers.
 // Error.captureStackTrace?.(targetOject, hideFromHere = AppError class itself)
 
