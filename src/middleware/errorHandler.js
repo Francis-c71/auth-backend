@@ -8,7 +8,7 @@ export const notFoundErrorHandler = (req, _res, next) =>
 
 export function generalErrorHandler(err, _req, res, _next) {
   let status = 500;
-  let message = 'Internal server error';
+  let message = 'Internal server error.';
   let details;
 
   if (err instanceof AppError) {

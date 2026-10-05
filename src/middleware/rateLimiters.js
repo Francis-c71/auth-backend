@@ -7,7 +7,7 @@ import rateLimit from 'express-rate-limit';
 // and I'll create a rate limiter.
 
 // IETF-Internet Engineering Task Force;
-// provides 'draft-7' version of standard headers
+// provides 'draft-7' version of standard headers,
 // and let's turn off the old legacy headers - for clean error info.
 const make = (windowMs, limit, message) =>
   rateLimit({
