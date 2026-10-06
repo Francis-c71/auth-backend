@@ -190,7 +190,7 @@ curl -X POST localhost:4000/api/auth/forgot-password \
   -H 'Content-Type: application/json' \
   -d '{"email":"ada@example.com"}'
 ```
-Copy the reset token printed in the server console.
+Copy the reset token printed in the server console and use it to reset password.
 
 ### 11. Reset password
 ```bash
@@ -226,7 +226,8 @@ npm run create-admin -- "Ada Lovelace" ada@example.com 'BrandNewPass3'
 Then log in again to get a fresh access token with the `admin` role, and:
 ```bash
 curl "localhost:4000/api/users?page=1&limit=20" \
-  -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
+  -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
+  | python3 -m json.tool
 ```
 
 ### 16. Admin: change a user's role
