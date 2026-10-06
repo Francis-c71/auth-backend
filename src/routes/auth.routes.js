@@ -16,6 +16,7 @@ r.post('/logout-all', authenticate, c.logoutAll);
 r.post('/verify-email', authLimiter, validate(v.verifyEmailSchema), c.verifyEmail);
 r.post('/resend-verification', sensitiveLimiter, validate(v.emailOnlySchema), c.resendVerification);
 
+
 r.post('/forgot-password', sensitiveLimiter, validate(v.emailOnlySchema), c.forgotPassword);
 r.post('/reset-password', authLimiter, validate(v.resetPasswordSchema), c.resetPassword);
 r.post('/change-password', authenticate, validate(v.changePasswordSchema), c.changePassword);
