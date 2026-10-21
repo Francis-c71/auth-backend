@@ -40,6 +40,8 @@ export const refreshSchema = {
 };
 
 export const verifyEmailSchema = { body: z.object({ token }).strict() };
+
+
 export const emailOnlySchema = { body: z.object({ email }).strict() };
 export const resetPasswordSchema = { body: z.object({ token, password }).strict() };
 
