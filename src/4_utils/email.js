@@ -1,7 +1,7 @@
 
 // Nodemailer, a postman
 import nodemailer from 'nodemailer';
-import { env } from '../config/env.js';
+import { env } from '../1_config/env.js';
 
 const transporter = env.SMTP_HOST
   ? nodemailer.createTransport({

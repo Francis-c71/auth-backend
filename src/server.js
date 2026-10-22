@@ -1,5 +1,5 @@
-import { env } from './config/env.js';
-import { connectDB, disconnectDB } from './config/db.js';
+import { env } from './1_config/env.js';
+import { connectDB, disconnectDB } from './1_config/db.js';
 import app from './app.js';
 
 await connectDB();

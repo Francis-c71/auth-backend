@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 // plaintext leak
 import bcrypt from 'bcryptjs';
 
-import { env } from '../config/env.js';
+import { env } from '../1_config/env.js';
 
 export const ROLES = ['user', 'admin'];
 

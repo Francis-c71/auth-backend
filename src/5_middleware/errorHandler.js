@@ -1,6 +1,6 @@
 import { ZodError } from 'zod';
-import { AppError } from '../utils/AppError.js';
-import { env } from '../config/env.js';
+import { AppError } from '../4_utils/AppError.js';
+import { env } from '../1_config/env.js';
 
 export const notFoundErrorHandler = (req, _res, next) =>
   next(new AppError(`Route ${req.method} ${req.originalUrl} not found`, 404));

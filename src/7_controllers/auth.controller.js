@@ -1,6 +1,6 @@
-import { env } from '../config/env.js';
-import { asyncHandler } from '../utils/asyncHandler.js';
-import * as auth from '../services/auth.service.js';
+import { env } from '../1_config/env.js';
+import { asyncHandler } from '../4_utils/asyncHandler.js';
+import * as auth from '../6_services/auth.service.js';
 
 const COOKIE_NAME = 'refreshToken';
 

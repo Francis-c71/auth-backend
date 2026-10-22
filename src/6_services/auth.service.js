@@ -9,12 +9,12 @@
 
 import crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
-import { User } from '../models/User.js';
-import { RefreshToken } from '../models/RefreshToken.js';
-import { AppError } from '../utils/AppError.js';
-import { env } from '../config/env.js';
-import { signAccessToken, generateToken, hashToken } from '../utils/tokens.js';
-import { sendVerificationEmail, sendPasswordResetEmail } from '../utils/email.js';
+import { User } from '../2_models/User.js';
+import { RefreshToken } from '../2_models/RefreshToken.js';
+import { AppError } from '../4_utils/AppError.js';
+import { env } from '../1_config/env.js';
+import { signAccessToken, generateToken, hashToken } from '../4_utils/tokens.js';
+import { sendVerificationEmail, sendPasswordResetEmail } from '../4_utils/email.js';
 
 const VERIFY_TTL_MS = 24 * 60 * 60 * 1000;
 const RESET_TTL_MS = 60 * 60 * 1000;

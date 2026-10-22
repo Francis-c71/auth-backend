@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import * as c from '../controllers/auth.controller.js';
-import { authenticate } from '../middleware/auth.js';
-import { validate } from '../middleware/validate.js';
-import { authLimiter, sensitiveLimiter } from '../middleware/rateLimiters.js';
-import * as v from '../validators/auth.validators.js';
+import * as c from '../7_controllers/auth.controller.js';
+import { authenticate } from '../5_middleware/auth.js';
+import { validate } from '../5_middleware/validate.js';
+import { authLimiter, sensitiveLimiter } from '../5_middleware/rateLimiters.js';
+import * as v from '../3_validators/auth.validators.js';
 
 const r = Router();
 
