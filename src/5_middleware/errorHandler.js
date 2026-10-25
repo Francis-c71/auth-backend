@@ -38,6 +38,7 @@ export function generalErrorHandler(err, _req, res, _next) {
   res.status(status).json({
     status: 'error',
     message,
+    ...(err.code && {code: err.code}),
     ...(details && { errors: details }),
     ...(!env.isProd && status === 500 && { stack: err.stack }),
   });

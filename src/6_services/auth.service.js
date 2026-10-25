@@ -163,7 +163,7 @@ export async function login({ email, password }, meta) {
   }
 
   if (env.REQUIRE_EMAIL_VERIFICATION && !user.isEmailVerified) {
-    throw new AppError('Please verify your email address before logging in', 403);
+    throw new AppError('Please verify your email address before logging in', 403, 'EMAIL_NOT_VERIFIED');
   }
 
   await User.updateOne(
