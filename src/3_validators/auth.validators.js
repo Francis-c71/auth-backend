@@ -39,10 +39,11 @@ export const refreshSchema = {
   body: z.object({ refreshToken: token.optional() }).optional().default({}),
 };
 
+// Token for email verification should come from the body.
 export const verifyEmailSchema = { body: z.object({ token }).strict() };
 
-
 export const emailOnlySchema = { body: z.object({ email }).strict() };
+
 export const resetPasswordSchema = { body: z.object({ token, password }).strict() };
 
 // The new password must follow the password rule

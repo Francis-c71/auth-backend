@@ -122,6 +122,8 @@ export async function verifyEmail(token) {
   );
 }
 
+
+
 export async function resendVerification(email) {
   const user = await User.findOne({ email });
   if (!user || user.isEmailVerified) return; // silent: don't reveal account state

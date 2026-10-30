@@ -6,7 +6,7 @@
 import { z } from 'zod';
 import { ROLES } from '../2_models/User.js';
 
-// ^       → start
+// ^       → start of regex
 // [a-f\d] → hexadecimal characters
 // {24}    → exactly 24 characters
 // $       → end

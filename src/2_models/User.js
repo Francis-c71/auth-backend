@@ -1,17 +1,21 @@
-// Talk to mongoDB using JS language,
-// with more added functions.
+/** Talk to mongoDB using JS language, with more added functions.*/
 import mongoose from 'mongoose';
 
-// Prevent brute force or dictionary attack, 
-// rainbow table attack and 
-// plaintext leak
+/** Prevent brute force or dictionary attack, rainbow table attack and plaintext leak */
 import bcrypt from 'bcryptjs';
 
 import { env } from '../1_config/env.js';
 
 export const ROLES = ['user', 'admin'];
 
-// The select prevent you from accidentally send password to the frontend
+/** 
+ * The select prevent you from mistakenly fetching confidential info such as
+ * password from the db, such that you don't also mistakenly send it to the frontemd,
+ * The transform function hides the confidential info when data is being sent to the frontend,
+ * even if you fetched it with .select("+password") for login check.
+ * so that we need to deliberately do `.select("+password") to get it if we want.
+ */
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true, maxlength: 80 },
@@ -32,7 +36,7 @@ const userSchema = new mongoose.Schema(
     lastLoginAt: { type: Date },
   },
   {
-    timestamps: true,
+    timestamps: true, // Adds createdAt and updatedAt fields to the document.
     toJSON: {
       transform(_doc, ret) {
         ret.id = ret._id;
