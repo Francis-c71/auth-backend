@@ -16,6 +16,8 @@ export const ROLES = ['user', 'admin'];
  * so that we need to deliberately do `.select("+password") to get it if we want.
  */
 
+
+/** Schema classes or model or general blueprint or template*/
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true, maxlength: 80 },
