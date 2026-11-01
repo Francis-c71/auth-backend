@@ -4,7 +4,7 @@
 // Changing a user's role
 
 import { z } from 'zod';
-import { ROLES } from '../2_models/User.js';
+import { ROLES } from '../4_models/User.js';
 
 // ^       → start of regex
 // [a-f\d] → hexadecimal characters

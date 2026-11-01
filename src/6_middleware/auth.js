@@ -2,10 +2,10 @@
 // Check weather the user is logged in
 // Check weather the user has a permission to access a particular route
 
-import { User } from '../2_models/User.js';
-import { AppError } from '../4_utils/AppError.js';
-import { asyncHandler } from '../4_utils/asyncHandler.js';
-import { verifyAccessToken } from '../4_utils/tokens.js';
+import { User } from '../4_models/User.js';
+import { AppError } from '../3_utils/AppError.js';
+import { asyncHandler } from '../3_utils/asyncHandler.js';
+import { verifyAccessToken } from '../3_utils/tokens.js';
 
 // Requires a valid `Authorization: Bearer <accessToken>` header. Sets req.user
 export const authenticate = asyncHandler(async (req, _res, next) => {

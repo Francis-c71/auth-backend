@@ -1,5 +1,5 @@
 import { ZodError } from 'zod';
-import { AppError } from '../4_utils/AppError.js';
+import { AppError } from '../3_utils/AppError.js';
 import { env } from '../1_config/env.js';
 
 export const notFoundErrorHandler = (req, _res, next) =>

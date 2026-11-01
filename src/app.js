@@ -15,10 +15,10 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
 import { env } from './1_config/env.js';
-import { globalLimiter } from './5_middleware/rateLimiters.js';
-import { notFoundErrorHandler, generalErrorHandler } from './5_middleware/errorHandler.js';
-import authRoutes from './8_routes/auth.routes.js';
-import userRoutes from './8_routes/user.routes.js';
+import { globalLimiter } from './6_middleware/rateLimiters.js';
+import { notFoundErrorHandler, generalErrorHandler } from './6_middleware/errorHandler.js';
+import authRoutes from './9_routes/auth.routes.js';
+import userRoutes from './9_routes/user.routes.js';
 
 const app = express();
 

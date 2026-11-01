@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import * as c from '../7_controllers/user.controller.js';
-import { authenticate, authorize } from '../5_middleware/auth.js';
-import { validate } from '../5_middleware/validate.js';
-import * as v from '../3_validators/user.validators.js';
+import * as c from '../8_controllers/user.controller.js';
+import { authenticate, authorize } from '../6_middleware/auth.js';
+import { validate } from '../6_middleware/validate.js';
+import * as v from '../5_validators/user.validators.js';
 
 const r = Router();
 

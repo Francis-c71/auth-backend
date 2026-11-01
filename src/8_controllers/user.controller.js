@@ -1,7 +1,7 @@
-import { User } from '../2_models/User.js';
-import { AppError } from '../4_utils/AppError.js';
-import { asyncHandler } from '../4_utils/asyncHandler.js';
-import { logoutAll } from '../6_services/auth.service.js';
+import { User } from '../4_models/User.js';
+import { AppError } from '../3_utils/AppError.js';
+import { asyncHandler } from '../3_utils/asyncHandler.js';
+import { logoutAll } from '../7_services/auth.service.js';
 
 export const getMe = (req, res) => res.json({ status: 'success', user: req.user });
 
